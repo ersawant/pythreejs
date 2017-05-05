@@ -572,19 +572,33 @@ define(["jupyter-js-widgets", "underscore", "three", "ndarray"],
 
     var SurfaceGeometryView = ThreeView.extend({
         update: function() {
-            var obj = new THREE.PlaneGeometry(this.model.get('width'),
+            var obj = this.obj;
+            var needsUpdate = (obj === void 0);
+            if (needsUpdate
+                || this.model.hasChanged('width')
+                || this.model.hasChanged('height')
+                || this.model.hasChanged('width_segments')
+                || this.model.hasChanged('height_segments')) {
+                needsUpdate = true;
+                obj = new THREE.PlaneGeometry(this.model.get('width'),
                                               this.model.get('height'),
                                               this.model.get('width_segments'),
                                               this.model.get('height_segments'));
-            // PlaneGeometry constructs its vertices by going across x
-            // coordinates, starting from the maximum y coordinate
-            var z = this.model.get('z');
-            for (var i = 0, len = obj.vertices.length; i<len; i++) {
-                obj.vertices[i].z = z[i];
             }
-            obj.computeFaceNormals();
-            obj.computeVertexNormals();
-            this.replace_obj(obj);
+            if (needsUpdate || this.model.hasChanged('z')) {
+                // PlaneGeometry constructs its vertices by going across x
+                // coordinates, starting from the maximum y coordinate
+                needsUpdate = true;
+                var z = this.model.get('z');
+                for (var i = 0, len = obj.vertices.length; i<len; i++) {
+                    obj.vertices[i].z = z[i];
+                }
+            }
+            if (needsUpdate) {
+                obj.computeFaceNormals();
+                obj.computeVertexNormals();
+                this.replace_obj(obj);
+            }
         },
     });
 
