@@ -19,7 +19,7 @@
     "webpack": "^1.12.14"
   },
   "dependencies": {
-    "jupyter-js-widgets": "^3.0.0-alpha.2",
+    "jupyter-js-widgets": "^3.0.0-alpha.3",
     "ndarray": "^1.0.18",
     "three": "^0.75.0",
     "underscore": "^1.8.3"
